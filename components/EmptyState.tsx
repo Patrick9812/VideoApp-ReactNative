@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export const EmptyState = ({ message }: { message: string }) => (
   <View style={styles.container}>
@@ -13,22 +13,22 @@ export const EmptyState = ({ message }: { message: string }) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 80,
     paddingHorizontal: 40,
   },
   title: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: "Poppins-Bold",
     fontSize: 18,
-    color: '#2B2D42',
+    color: "#2B2D42",
     marginTop: 20,
   },
   subtitle: {
-    fontFamily: 'Poppins-Regular',
+    fontFamily: "Poppins-Regular",
     fontSize: 14,
-    color: '#8D99AE',
-    textAlign: 'center',
+    color: "#8D99AE",
+    textAlign: "center",
     marginTop: 8,
   },
 });

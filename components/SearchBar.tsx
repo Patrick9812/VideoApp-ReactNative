@@ -1,7 +1,13 @@
-import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
-import SearchIcon from '../assets/taskAssets/icons/search-icon.svg';
-import SettingsIcon from '../assets/taskAssets/icons/settings-icon.svg';
+import React from "react";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
+import SearchIcon from "../assets/taskAssets/icons/search-icon.svg";
+import SettingsIcon from "../assets/taskAssets/icons/settings-icon.svg";
 
 interface SearchInputProps {
   value: string;
@@ -12,18 +18,23 @@ interface SearchInputProps {
   onSettingsPress?: () => void;
 }
 
-export const SearchInput = ({ 
-  value, 
-  onChangeText, 
-  placeholder, 
-  style, 
-  showSettings, 
-  onSettingsPress 
+export const SearchInput = ({
+  value,
+  onChangeText,
+  placeholder,
+  style,
+  showSettings,
+  onSettingsPress,
 }: SearchInputProps) => {
   return (
     <View style={[styles.mainWrapper, style]}>
       <View style={styles.searchBarContainer}>
-        <SearchIcon width={20} height={20} color="#2B2D42" style={styles.searchIcon} />
+        <SearchIcon
+          width={20}
+          height={20}
+          color="#2B2D42"
+          style={styles.searchIcon}
+        />
         <TextInput
           style={styles.input}
           value={value}
@@ -33,10 +44,9 @@ export const SearchInput = ({
         />
       </View>
 
-
       {showSettings && (
-        <TouchableOpacity 
-          style={styles.settingsBtn} 
+        <TouchableOpacity
+          style={styles.settingsBtn}
           onPress={onSettingsPress}
           activeOpacity={0.7}
         >
@@ -49,34 +59,34 @@ export const SearchInput = ({
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
   searchBarContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1.5,
-    borderColor: '#2B2D42',
+    borderColor: "#2B2D42",
     borderRadius: 12,
     height: 48,
     paddingHorizontal: 15,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   searchIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: "Poppins-Regular",
     fontSize: 14,
-    color: '#2B2D42',
+    color: "#2B2D42",
     paddingVertical: 0,
   },
   settingsBtn: {
     marginLeft: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

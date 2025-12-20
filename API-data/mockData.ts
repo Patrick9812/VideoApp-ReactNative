@@ -23,16 +23,16 @@ export const CATEGORIES: Category[] = [
       { 
         id: 'v1', 
         videoTitle: 'Kurs od podstaw asdasdas dasd asd asd asd asd asd asd asd asasd asd asd sda', 
-        date: '12.08.2024', 
+        date: '2024-08-15', 
         channel: "Test1",
-        views: 123,
+        views: 100,
         likes: 2,
         description: "sadasdasdasdasd"
       },
       { 
         id: 'v2', 
         videoTitle: 'Zarządzanie stanem', 
-        date: '15.08.2024', 
+        date: '2024-08-20', 
         channel: "Test2",
         views: 123,
         likes: 2,
@@ -47,18 +47,18 @@ export const CATEGORIES: Category[] = [
       { 
         id: 'v3', 
         videoTitle: 'Typowanie propsów', 
-        date: '20.08.2024', 
+        date: '2024-08-12', 
         channel: "Test3",
-        views: 123,
+        views: 153,
         likes: 2,
         description: "sadasdasdasdasd"
       },
       { 
         id: 'v4', 
         videoTitle: 'Generic Types', 
-        date: '22.08.2024', 
+        date: '2024-08-05', 
         channel: "Test4",
-        views: 123,
+        views: 80,
         likes: 2,
         description: "sadasdasdasdasd"
       }
