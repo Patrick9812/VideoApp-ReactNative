@@ -1,108 +1,114 @@
-import React, { useState } from "react";
-import { FlatList, StyleSheet, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchInput } from "../components/SearchBar";
 import { CategorySection } from "../components/CategorySection";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
-import { CATEGORIES } from "../API-data/mockData";
+import { fetchVideosByCategory } from "../api/fetchDataApi";
+
+const REQUIRED_CATEGORIES = [
+  "React Native",
+  "React",
+  "Typescript",
+  "Javascript",
+];
 
 export default function MainScreen() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoriesData, setCategoriesData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<any>();
 
-  const filteredData = CATEGORIES.filter((category) => {
+  useEffect(() => {
+    const loadInitialData = async () => {
+      setIsLoading(true);
+      try {
+        const promises = REQUIRED_CATEGORIES.map(async (category, index) => {
+          const videos = await fetchVideosByCategory(`${category} programming`);
+          return { id: String(index), title: category, data: videos };
+        });
+        const results = await Promise.all(promises);
+        setCategoriesData(results);
+      } catch (error) {
+        console.error("Błąd ładowania:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadInitialData();
+  }, []);
+
+  const filteredData = categoriesData.filter((category) => {
     const searchTerm = searchQuery.toLowerCase();
-    const categoryMatches = category.title.toLowerCase().includes(searchTerm);
-    const videoMatches = category.data.some((video) =>
-      video.videoTitle.toLowerCase().includes(searchTerm)
+    return (
+      category.title.toLowerCase().includes(searchTerm) ||
+      category.data.some((v: any) =>
+        v.videoTitle.toLowerCase().includes(searchTerm)
+      )
     );
-    return categoryMatches || videoMatches;
   });
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingCenter}>
+        <ActivityIndicator size="large" color="#2B2D42" />
+      </View>
+    );
+  }
+
   return (
-    <>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <SafeAreaView style={styles.safeArea}>
-        <FlatList
-          data={filteredData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => {
-            const searchTerm = searchQuery.toLowerCase();
-            const filteredVideos = item.title.toLowerCase().includes(searchTerm)
-              ? item.data
-              : item.data.filter((video) =>
-                  video.videoTitle.toLowerCase().includes(searchTerm)
-                );
+      <FlatList
+        data={filteredData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => {
+          const searchTerm = searchQuery.toLowerCase();
+          const baseVideos = item.data.filter(
+            (v: any) =>
+              v.videoTitle.toLowerCase().includes(searchTerm) ||
+              item.title.toLowerCase().includes(searchTerm)
+          );
 
-            const isActuallyLast = index === filteredData.length - 1;
-
-            return (
-              <CategorySection
-                title={item.title}
-                data={filteredVideos}
-                isLast={isActuallyLast}
-                onShowMore={() => {
-                  navigation.navigate("Search", { initialQuery: item.title });
-                }}
-                onVideoPress={(video) => {
-                  navigation.navigate("VideoDetails", { video });
-                }}
-              />
-            );
-          }}
-          ListHeaderComponent={
-            <View style={styles.headerWrapper}>
-              <SearchInput
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                showSettings={true}
-                onSettingsPress={() => console.log("Settings Pressed")}
-              />
-
-              <View style={styles.infoContainer}>
-                {searchQuery.length > 0 && (
-                  <Text style={styles.resultsCount}>
-                    <Text>
-                      {filteredData.length} categories found for:{" "}
-                      <Text style={styles.boldText}>"{searchQuery}"</Text>
-                    </Text>
-                  </Text>
-                )}
-              </View>
-            </View>
-          }
-          contentContainerStyle={styles.listContent}
-        />
-      </SafeAreaView>
-    </>
+          return (
+            <CategorySection
+              title={item.title}
+              data={baseVideos.slice(0, 5)}
+              isLast={index === filteredData.length - 1}
+              onShowMore={() =>
+                navigation.navigate("Search", { initialQuery: item.title })
+              }
+              onVideoPress={(video) =>
+                navigation.navigate("VideoDetails", { video })
+              }
+            />
+          );
+        }}
+        ListHeaderComponent={
+          <View style={styles.headerWrapper}>
+            <SearchInput
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              showSettings
+            />
+          </View>
+        }
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-  headerWrapper: {
-    paddingHorizontal: 25,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  infoContainer: {
-    marginTop: 15,
-    minHeight: 20,
-  },
-  resultsCount: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 10,
-    color: "#2B2D42",
-    opacity: 0.7,
-  },
-  boldText: {
-    fontFamily: "Poppins-Bold",
-  },
-  listContent: {
-    paddingBottom: 40,
-  },
+  safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
+  loadingCenter: { flex: 1, justifyContent: "center", alignItems: "center" },
+  headerWrapper: { paddingHorizontal: 25, marginTop: 10, marginBottom: 20 },
 });

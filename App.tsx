@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import * as SplashScreen from 'expo-splash-screen';
-import * as NavigationBar from 'expo-navigation-bar';
-import { Platform, AppState } from 'react-native';
-import { 
-  useFonts, 
-  Poppins_400Regular, 
-  Poppins_700Bold 
-} from '@expo-google-fonts/poppins';
-import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import * as SplashScreen from "expo-splash-screen";
+import * as NavigationBar from "expo-navigation-bar";
+import { Platform, AppState } from "react-native";
+import {
+  useFonts,
+  Poppins_400Regular,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
+import { StatusBar } from "expo-status-bar";
 
 import LoginScreen from "./screens/loginScreen";
 import AppNavigator from "./navigation/AppNavigation";
-
+console.log("Mój klucz API:", process.env.EXPO_PUBLIC_YOUTUBE_API_KEY);
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [fontsLoaded, fontError] = useFonts({
-    'Poppins-Regular': Poppins_400Regular,
-    'Poppins-Bold': Poppins_700Bold,
+    "Poppins-Regular": Poppins_400Regular,
+    "Poppins-Bold": Poppins_700Bold,
   });
 
   const configureAndroidNavigation = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       try {
         await NavigationBar.setVisibilityAsync("hidden");
       } catch (e) {
@@ -35,8 +35,8 @@ export default function App() {
 
   useEffect(() => {
     configureAndroidNavigation();
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (nextAppState === 'active') {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
         configureAndroidNavigation();
       }
     });
@@ -58,13 +58,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <StatusBar 
-        style="dark" 
-        backgroundColor="#ffffff" 
-        translucent={false} 
-        hidden={false} 
+      <StatusBar
+        style="dark"
+        backgroundColor="#ffffff"
+        translucent={false}
+        hidden={false}
       />
-      
+
       {isLoggedIn ? (
         <AppNavigator />
       ) : (

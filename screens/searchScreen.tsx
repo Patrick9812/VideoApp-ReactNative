@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { CATEGORIES, Video } from "../API-data/mockData";
-import formatDate from "../components/FormatDate"; // Import Twojej nowej funkcji
 import {
+  Image,
   StyleSheet,
   View,
   Text,
@@ -15,10 +14,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchInput } from "../components/SearchBar";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import formatDate from "../components/FormatDate";
+import { fetchVideosByCategory } from "../api/fetchDataApi";
+
+type SortOption = "Latest" | "Oldest" | "Popular";
 
 export default function SearchScreen() {
   const route = useRoute<any>();
@@ -26,77 +30,78 @@ export default function SearchScreen() {
   const tabBarHeight = useBottomTabBarHeight();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [allVideos, setAllVideos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [sortBy, setSortBy] = useState<"latest" | "oldest" | "popular">(
-    "latest"
-  );
+  const [sortBy, setSortBy] = useState<SortOption>("Latest");
 
+  const loadVideos = async (query: string) => {
+    setLoading(true);
+    try {
+      // Technical filter for better results
+      const refinedQuery = query
+        ? `${query} programming tutorial`
+        : "React Native programming";
+      const data = await fetchVideosByCategory(refinedQuery);
+      setAllVideos(data);
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial load from params
   useEffect(() => {
     const q = route.params?.initialQuery;
-    if (q) setSearchQuery(q);
+    if (q) {
+      setSearchQuery(q);
+      loadVideos(q);
+    }
   }, [route.params?.initialQuery]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery && !route.params?.initialQuery) {
+        loadVideos(searchQuery);
+      }
+    }, 600);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
 
   useFocusEffect(
     useCallback(() => {
       const q = route.params?.initialQuery;
-      if (!q) setSearchQuery("");
+      if (!q) {
+        setSearchQuery("");
+        loadVideos("");
+      }
       return () => {
         navigation.setParams({ initialQuery: undefined });
       };
     }, [route.params?.initialQuery])
   );
 
-  const getFilteredVideos = () => {
-    const searchTerm = searchQuery.toLowerCase().trim();
-    let results: Video[] = [];
+  const sortedVideos = useMemo(() => {
+    const results = [...allVideos];
+    return results.sort((a, b) => {
+      const timeA = a.date ? new Date(a.date).getTime() : 0;
+      const timeB = b.date ? new Date(b.date).getTime() : 0;
 
-    // KROK 1: Filtrowanie (Zgodne z Twoim pierwotnym kodem)
-    CATEGORIES.forEach((category) => {
-      category.data.forEach((video) => {
-        const matchesSearch =
-          searchTerm === "" ||
-          video.videoTitle.toLowerCase().includes(searchTerm) ||
-          video.channel.toLowerCase().includes(searchTerm) ||
-          category.title.toLowerCase().includes(searchTerm);
-
-        if (matchesSearch) {
-          results.push(video);
-        }
-      });
-    });
-
-    // KROK 2: Unikalność
-    let uniqueResults = Array.from(new Set(results.map((v) => v.id))).map(
-      (id) => results.find((v) => v.id === id)!
-    );
-
-    // KROK 3: Sortowanie (Naprawione i bezpieczne)
-    return uniqueResults.sort((a, b) => {
-      if (sortBy === "latest" || sortBy === "oldest") {
-        const timeA = a.date ? new Date(a.date).getTime() : 0;
-        const timeB = b.date ? new Date(b.date).getTime() : 0;
-        return sortBy === "latest" ? timeB - timeA : timeA - timeB;
-      }
-      if (sortBy === "popular") {
-        return (b.views || 0) - (a.views || 0);
+      if (sortBy === "Latest") return timeB - timeA;
+      if (sortBy === "Oldest") return timeA - timeB;
+      if (sortBy === "Popular") {
+        return (parseInt(b.views) || 0) - (parseInt(a.views) || 0);
       }
       return 0;
     });
-  };
-
-  const filteredVideos = getFilteredVideos();
-
-  const getSortLabel = () => {
-    if (sortBy === "latest") return "Latest";
-    if (sortBy === "oldest") return "Oldest";
-    return "Popular";
-  };
+  }, [allVideos, sortBy]);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === "ios" ? tabBarHeight : 0}
       >
         <View style={styles.container}>
@@ -107,27 +112,27 @@ export default function SearchScreen() {
           />
 
           <View style={styles.infoRow}>
-            <Text style={styles.resultsCount}>
-              {searchQuery.length > 0 ? (
-                <Text>
-                  {filteredVideos.length} wyników dla:{" "}
-                  <Text style={styles.boldText}>"{searchQuery}"</Text>
-                </Text>
+            <View style={{ flex: 1 }}>
+              {loading ? (
+                <ActivityIndicator size="small" color="#2B2D42" />
               ) : (
-                <Text>Wszystkie filmy</Text>
+                <Text style={styles.resultsCount}>
+                  {allVideos.length} results found for:{" "}
+                  <Text style={styles.boldText}>
+                    "{searchQuery || "All categories"}"
+                  </Text>
+                </Text>
               )}
-            </Text>
-
+            </View>
             <TouchableOpacity onPress={() => setIsModalVisible(true)}>
               <Text style={styles.sortButtonText}>
-                Sort by:{" "}
-                <Text style={{ fontWeight: "700" }}>{getSortLabel()}</Text> ▾
+                Sort by: <Text style={styles.boldText}>{sortBy}</Text>
               </Text>
             </TouchableOpacity>
           </View>
 
           <FlatList
-            data={filteredVideos}
+            data={sortedVideos}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
@@ -138,10 +143,10 @@ export default function SearchScreen() {
                   navigation.navigate("VideoDetails", { video: item })
                 }
               >
-                <View style={styles.thumbnailPlaceholder}>
-                  <Text style={styles.placeholderText}>Miniaturka</Text>
-                </View>
-
+                <Image
+                  source={{ uri: item.thumbnail }}
+                  style={styles.thumbnail}
+                />
                 <View style={styles.cardInfo}>
                   <Text style={styles.channelText}>{item.channel}</Text>
                   <Text style={styles.titleText} numberOfLines={2}>
@@ -154,6 +159,7 @@ export default function SearchScreen() {
           />
         </View>
 
+        {/* Sorting Modal */}
         <Modal transparent visible={isModalVisible} animationType="fade">
           <TouchableOpacity
             style={styles.modalOverlay}
@@ -161,25 +167,21 @@ export default function SearchScreen() {
             onPress={() => setIsModalVisible(false)}
           >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Sort records by:</Text>
-              {[
-                { label: "Upload date: latest", value: "latest" },
-                { label: "Upload date: oldest", value: "oldest" },
-                { label: "Most popular", value: "popular" },
-              ].map((item) => (
-                <TouchableOpacity
-                  key={item.value}
-                  style={styles.radioOption}
-                  onPress={() => setSortBy(item.value as any)}
-                >
-                  <View style={styles.radioOuter}>
-                    {sortBy === item.value && (
-                      <View style={styles.radioInner} />
-                    )}
-                  </View>
-                  <Text style={styles.radioText}>{item.label}</Text>
-                </TouchableOpacity>
-              ))}
+              <Text style={styles.modalTitle}>Sort results by:</Text>
+              {(["Latest", "Oldest", "Popular"] as SortOption[]).map(
+                (option) => (
+                  <TouchableOpacity
+                    key={option}
+                    style={styles.radioOption}
+                    onPress={() => setSortBy(option)}
+                  >
+                    <View style={styles.radioOuter}>
+                      {sortBy === option && <View style={styles.radioInner} />}
+                    </View>
+                    <Text style={styles.radioText}>{option}</Text>
+                  </TouchableOpacity>
+                )
+              )}
               <TouchableOpacity
                 style={styles.confirmButton}
                 onPress={() => setIsModalVisible(false)}
@@ -196,60 +198,44 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
-  flex: { flex: 1 },
   container: { flex: 1, paddingHorizontal: 25 },
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 15,
-    marginBottom: 20,
+    marginVertical: 15,
   },
   resultsCount: {
-    fontFamily: "Poppins-Regular",
     fontSize: 10,
     color: "#2B2D42",
     opacity: 0.7,
   },
   sortButtonText: {
-    fontFamily: "Poppins-Regular",
     fontSize: 11,
     color: "#2B2D42",
-    textDecorationLine: "underline",
   },
-  boldText: { fontFamily: "Poppins-Bold" },
+  boldText: { fontWeight: "bold" },
   videoCard: { marginBottom: 25 },
-  thumbnailPlaceholder: {
+  thumbnail: {
     width: "100%",
-    height: 180,
+    height: 200,
     borderRadius: 15,
     backgroundColor: "#E1E4E8",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  placeholderText: {
-    color: "#8D99AE",
-    fontFamily: "Poppins-Regular",
-    fontSize: 12,
   },
   cardInfo: { marginTop: 8 },
-  channelText: { fontFamily: "Poppins-Bold", fontSize: 13, color: "#2B2D42" },
+  channelText: { fontWeight: "bold", fontSize: 13, color: "#2B2D42" },
   titleText: {
-    fontFamily: "Poppins-Regular",
     fontSize: 13,
     color: "#2B2D42",
     lineHeight: 18,
   },
   dateText: {
-    fontFamily: "Poppins-Regular",
     fontSize: 10,
     color: "#2B2D42",
     textAlign: "right",
     opacity: 0.5,
   },
-  listContent: {
-    paddingBottom: 20,
-  },
+  listContent: { paddingBottom: 20 },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -263,47 +249,35 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   modalTitle: {
-    fontFamily: "Poppins-Bold",
+    fontWeight: "bold",
     fontSize: 18,
     color: "#FFF",
-    marginBottom: 25,
-  },
-  radioOption: {
-    flexDirection: "row",
-    alignItems: "center",
     marginBottom: 20,
   },
+  radioOption: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
   radioOuter: {
-    height: 24,
-    width: 24,
-    borderRadius: 12,
+    height: 20,
+    width: 20,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: "#FFF",
+    marginRight: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 15,
   },
   radioInner: {
-    height: 12,
-    width: 12,
-    borderRadius: 6,
+    height: 10,
+    width: 10,
+    borderRadius: 5,
     backgroundColor: "#2B2D42",
   },
-  radioText: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 15,
-    color: "#FFF",
-  },
+  radioText: { color: "#FFF" },
   confirmButton: {
     backgroundColor: "#2B2D42",
+    padding: 15,
     borderRadius: 12,
-    paddingVertical: 15,
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 40,
   },
-  confirmButtonText: {
-    fontFamily: "Poppins-Bold",
-    fontSize: 16,
-    color: "#FFF",
-  },
+  confirmButtonText: { color: "#FFF", fontWeight: "bold" },
 });

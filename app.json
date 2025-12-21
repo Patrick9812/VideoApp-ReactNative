@@ -6,9 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/taskAssets/app-icon.svg",
+      "image": "./assets/splash-icon.png", 
       "resizeMode": "contain",
       "backgroundColor": "#8d99ae"
     },
@@ -16,6 +15,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.twg.videoapp",
       "navigationBar": {
         "visible": "immersive",
         "backgroundColor": "#00000000"
@@ -27,7 +27,18 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-video",
+        {
+          "enableAndroidPictureInPicture": true,
+          "enableBackgroundAudio": true,
+          "androidExtensions": {
+            "useExoplayerDash": true,
+            "useExoplayerHls": true
+          }
+        }
+      ]
     ]
   }
 }

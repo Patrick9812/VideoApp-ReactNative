@@ -16,6 +16,7 @@ interface VideoItem {
   likes: number;
   description: string;
   date?: string;
+  thumbnail: string;
 }
 
 interface CategorySectionProps {
@@ -49,7 +50,11 @@ export const CategorySection = ({
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => onVideoPress(item)}>
-          <VideoCard title={item.videoTitle} date={item.date} />
+          <VideoCard
+            title={item.videoTitle}
+            date={item.date}
+            thumbnail={item.thumbnail}
+          />
         </TouchableOpacity>
       )}
       contentContainerStyle={{ paddingLeft: 25, paddingRight: 25 }}
@@ -78,7 +83,7 @@ const styles = StyleSheet.create({
   showMore: {
     fontFamily: "Poppins-Regular",
     fontSize: 12,
-    color: "#5D5FEF",
+    color: "#2B2D42",
     textDecorationLine: "underline",
   },
 });

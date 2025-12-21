@@ -5,8 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "../screens/mainScreen";
 import SearchScreen from "../screens/searchScreen";
 import VideoDetailsScreen from "../screens/VideoDetailsScreen";
-import HomeIcon from "../assets/taskAssets/icons/home-icon.svg";
-import SearchIcon from "../assets/taskAssets/icons/search-icon.svg";
+import { SVGIcons } from "../components/SVGIcons";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -23,9 +22,9 @@ function TabNavigator() {
         tabBarIcon: ({ focused }) => {
           const iconColor = focused ? "#FFFFFF" : "#2b2d42";
           if (route.name === "Home") {
-            return <HomeIcon width={24} height={24} color={iconColor} />;
+            return <SVGIcons.Home width={24} height={24} color={iconColor} />;
           } else {
-            return <SearchIcon width={24} height={24} color={iconColor} />;
+            return <SVGIcons.Search width={24} height={24} color={iconColor} />;
           }
         },
       })}

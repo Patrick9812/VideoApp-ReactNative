@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
-import SearchIcon from "../assets/taskAssets/icons/search-icon.svg";
-import SettingsIcon from "../assets/taskAssets/icons/settings-icon.svg";
+import { SVGIcons } from "./SVGIcons";
 
 interface SearchInputProps {
   value: string;
@@ -29,7 +28,7 @@ export const SearchInput = ({
   return (
     <View style={[styles.mainWrapper, style]}>
       <View style={styles.searchBarContainer}>
-        <SearchIcon
+        <SVGIcons.Search
           width={20}
           height={20}
           color="#2B2D42"
@@ -48,9 +47,9 @@ export const SearchInput = ({
         <TouchableOpacity
           style={styles.settingsBtn}
           onPress={onSettingsPress}
-          activeOpacity={0.7}
+          activeOpacity={1}
         >
-          <SettingsIcon width={24} height={24} color="#2B2D42" />
+          <SVGIcons.Settings width={24} height={24} color="#fff" />
         </TouchableOpacity>
       )}
     </View>
