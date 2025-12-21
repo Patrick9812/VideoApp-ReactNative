@@ -24,6 +24,12 @@ import { fetchVideosByCategory } from "../api/fetchDataApi";
 
 type SortOption = "Latest" | "Oldest" | "Popular";
 
+const SORT_LABELS: Record<SortOption, string> = {
+  Latest: "Upload date: latest",
+  Oldest: "Upload date: oldest",
+  Popular: "Most popular",
+};
+
 export default function SearchScreen() {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
@@ -38,7 +44,6 @@ export default function SearchScreen() {
   const loadVideos = async (query: string) => {
     setLoading(true);
     try {
-      // Technical filter for better results
       const refinedQuery = query
         ? `${query} programming tutorial`
         : "React Native programming";
@@ -51,48 +56,46 @@ export default function SearchScreen() {
     }
   };
 
-  // Initial load from params
-  useEffect(() => {
-    const q = route.params?.initialQuery;
-    if (q) {
-      setSearchQuery(q);
-      loadVideos(q);
-    }
-  }, [route.params?.initialQuery]);
+  useFocusEffect(
+    useCallback(() => {
+      const params = route.params as
+        | { initialQuery?: string; shouldClear?: boolean }
+        | undefined;
+
+      if (params?.shouldClear) {
+        setSearchQuery("");
+        loadVideos("");
+        navigation.setParams({ shouldClear: undefined });
+      } else if (params?.initialQuery) {
+        setSearchQuery(params.initialQuery);
+        loadVideos(params.initialQuery);
+        navigation.setParams({ initialQuery: undefined });
+      }
+    }, [route.params])
+  );
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (searchQuery && !route.params?.initialQuery) {
+      if (
+        searchQuery &&
+        !route.params?.initialQuery &&
+        !route.params?.shouldClear
+      ) {
         loadVideos(searchQuery);
       }
     }, 600);
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  useFocusEffect(
-    useCallback(() => {
-      const q = route.params?.initialQuery;
-      if (!q) {
-        setSearchQuery("");
-        loadVideos("");
-      }
-      return () => {
-        navigation.setParams({ initialQuery: undefined });
-      };
-    }, [route.params?.initialQuery])
-  );
-
   const sortedVideos = useMemo(() => {
     const results = [...allVideos];
     return results.sort((a, b) => {
       const timeA = a.date ? new Date(a.date).getTime() : 0;
       const timeB = b.date ? new Date(b.date).getTime() : 0;
-
       if (sortBy === "Latest") return timeB - timeA;
       if (sortBy === "Oldest") return timeA - timeB;
-      if (sortBy === "Popular") {
+      if (sortBy === "Popular")
         return (parseInt(b.views) || 0) - (parseInt(a.views) || 0);
-      }
       return 0;
     });
   }, [allVideos, sortBy]);
@@ -126,7 +129,8 @@ export default function SearchScreen() {
             </View>
             <TouchableOpacity onPress={() => setIsModalVisible(true)}>
               <Text style={styles.sortButtonText}>
-                Sort by: <Text style={styles.boldText}>{sortBy}</Text>
+                Sort by:{" "}
+                <Text style={styles.boldText}>{SORT_LABELS[sortBy]}</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -159,7 +163,6 @@ export default function SearchScreen() {
           />
         </View>
 
-        {/* Sorting Modal */}
         <Modal transparent visible={isModalVisible} animationType="fade">
           <TouchableOpacity
             style={styles.modalOverlay}
@@ -167,7 +170,7 @@ export default function SearchScreen() {
             onPress={() => setIsModalVisible(false)}
           >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Sort results by:</Text>
+              <Text style={styles.modalTitle}>Sort records by:</Text>
               {(["Latest", "Oldest", "Popular"] as SortOption[]).map(
                 (option) => (
                   <TouchableOpacity
@@ -178,7 +181,7 @@ export default function SearchScreen() {
                     <View style={styles.radioOuter}>
                       {sortBy === option && <View style={styles.radioInner} />}
                     </View>
-                    <Text style={styles.radioText}>{option}</Text>
+                    <Text style={styles.radioText}>{SORT_LABELS[option]}</Text>
                   </TouchableOpacity>
                 )
               )}
@@ -196,6 +199,7 @@ export default function SearchScreen() {
   );
 }
 
+// Style pozostają bez zmian
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
   container: { flex: 1, paddingHorizontal: 25 },
@@ -277,7 +281,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 100,
   },
   confirmButtonText: { color: "#FFF", fontWeight: "bold" },
 });

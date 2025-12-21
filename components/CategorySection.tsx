@@ -49,7 +49,7 @@ export const CategorySection = ({
       keyExtractor={(item) => item.id}
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => onVideoPress(item)}>
+        <TouchableOpacity activeOpacity={1} onPress={() => onVideoPress(item)}>
           <VideoCard
             title={item.videoTitle}
             date={item.date}
