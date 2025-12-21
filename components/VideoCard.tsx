@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native"; // Dodaj Image
+import { View, Text, StyleSheet, Image } from "react-native";
 import formatDate from "./FormatDate";
+import colors from "../theme/colors";
 
 interface VideoCardProps {
   title: string;
@@ -44,14 +45,14 @@ const styles = StyleSheet.create({
   videoTitlePlaceholder: {
     fontFamily: "Poppins-Bold",
     fontSize: 14,
-    color: "#2B2D42",
+    color: colors.darkBlue,
     lineHeight: 18,
   },
   videoDatePlaceholder: {
     fontFamily: "Poppins-Regular",
     fontSize: 10,
-    color: "#2B2D42",
-    fontWeight: "600", // Zmień 600 na string "600" - RN czasem wyrzuca błąd przy liczbie
+    color: colors.darkBlue,
+    fontWeight: "600",
     textAlign: "right",
     marginTop: 4,
   },

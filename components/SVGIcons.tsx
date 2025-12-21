@@ -13,9 +13,13 @@ import FullscreenIcon from "../assets/taskAssets/icons/fullscreen-icon.svg";
 import SearchIcon from "../assets/taskAssets/icons/search-icon.svg";
 import SettingsIcon from "../assets/taskAssets/icons/settings-icon.svg";
 import HomeIcon from "../assets/taskAssets/icons/home-icon.svg";
+import NotificationsIcon from "../assets/taskAssets/icons/notification-icon.svg";
+import CloakIcon from "../assets/taskAssets/icons/clock-icon.svg";
 
 export const SVGIcons = {
   Back: LeftArrowIcon,
+  Notifications: NotificationsIcon,
+  Clock: CloakIcon,
   Home: HomeIcon,
   Volume: VolumeIcon,
   Airplay: AirplayIcon,

@@ -7,6 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { SVGIcons } from "./SVGIcons";
+import colors from "../theme/colors";
 
 interface SearchInputProps {
   value: string;
@@ -31,7 +32,7 @@ export const SearchInput = ({
         <SVGIcons.Search
           width={20}
           height={20}
-          color="#2B2D42"
+          color={colors.darkBlue}
           style={styles.searchIcon}
         />
         <TextInput
@@ -39,7 +40,7 @@ export const SearchInput = ({
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder || "Search..."}
-          placeholderTextColor="#2B2D42"
+          placeholderTextColor={colors.darkBlue}
         />
       </View>
 
@@ -49,7 +50,7 @@ export const SearchInput = ({
           onPress={onSettingsPress}
           activeOpacity={1}
         >
-          <SVGIcons.Settings width={24} height={24} color="#fff" />
+          <SVGIcons.Settings width={24} height={24} color={colors.white} />
         </TouchableOpacity>
       )}
     </View>
@@ -67,11 +68,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1.5,
-    borderColor: "#2B2D42",
+    borderColor: colors.darkBlue,
     borderRadius: 12,
     height: 48,
     paddingHorizontal: 15,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.white,
   },
   searchIcon: {
     marginRight: 10,
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Poppins-Regular",
     fontSize: 14,
-    color: "#2B2D42",
+    color: colors.darkBlue,
     paddingVertical: 0,
   },
   settingsBtn: {

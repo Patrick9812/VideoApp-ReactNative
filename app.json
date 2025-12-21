@@ -4,10 +4,10 @@
     "slug": "TWGVideoApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/taskAssets/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-icon.png", 
+      "image": "./assets/taskAssets/app-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#8d99ae"
     },
@@ -38,7 +38,8 @@
             "useExoplayerHls": true
           }
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ]
   }
 }

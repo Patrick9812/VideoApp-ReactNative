@@ -13,6 +13,7 @@ import { SVGIcons } from "../components/SVGIcons";
 import Video, { VideoRef } from "react-native-video";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { fetchVideoDetails } from "../api/fetchDataApi";
+import colors from "../theme/colors";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -20,11 +21,8 @@ const VideoDetailsScreen = () => {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { video } = route.params;
-
   const [activeTab, setActiveTab] = useState("Details");
   const [stats, setStats] = useState({ views: "0", likes: "0" });
-
-  // Stany UI i Odtwarzacza
   const [isVisible, setIsVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
@@ -101,7 +99,7 @@ const VideoDetailsScreen = () => {
                   style={styles.roundBtn}
                   onPress={handleBackPress}
                 >
-                  <SVGIcons.Back width={24} height={24} color="#FFF" />
+                  <SVGIcons.Back width={24} height={24} color={colors.white} />
                 </TouchableOpacity>
 
                 <View style={styles.topRight}>
@@ -110,13 +108,25 @@ const VideoDetailsScreen = () => {
                     onPress={() => setIsMuted(!isMuted)}
                   >
                     {isMuted ? (
-                      <SVGIcons.Volume width={20} height={20} color="#FFF" />
+                      <SVGIcons.Volume
+                        width={20}
+                        height={20}
+                        color={colors.white}
+                      />
                     ) : (
-                      <SVGIcons.Volume width={20} height={20} color="#FFF" />
+                      <SVGIcons.Volume
+                        width={20}
+                        height={20}
+                        color={colors.white}
+                      />
                     )}
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.roundBtn}>
-                    <SVGIcons.Airplay width={20} height={20} color="#FFF" />
+                    <SVGIcons.Airplay
+                      width={20}
+                      height={20}
+                      color={colors.white}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -126,7 +136,11 @@ const VideoDetailsScreen = () => {
                   style={styles.sideBtn}
                   onPress={() => videoRef.current?.seek(currentTime - 10)}
                 >
-                  <SVGIcons.Backward width={25} height={25} color="#FFF" />
+                  <SVGIcons.Backward
+                    width={25}
+                    height={25}
+                    color={colors.white}
+                  />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -134,9 +148,17 @@ const VideoDetailsScreen = () => {
                   onPress={() => setIsPlaying(!isPlaying)}
                 >
                   {isPlaying ? (
-                    <SVGIcons.Pause width={25} height={25} color="#FFF" />
+                    <SVGIcons.Pause
+                      width={25}
+                      height={25}
+                      color={colors.white}
+                    />
                   ) : (
-                    <SVGIcons.Play width={25} height={25} color="#FFF" />
+                    <SVGIcons.Play
+                      width={25}
+                      height={25}
+                      color={colors.white}
+                    />
                   )}
                 </TouchableOpacity>
 
@@ -144,7 +166,11 @@ const VideoDetailsScreen = () => {
                   style={styles.sideBtn}
                   onPress={() => videoRef.current?.seek(currentTime + 10)}
                 >
-                  <SVGIcons.Forward width={25} height={25} color="#FFF" />
+                  <SVGIcons.Forward
+                    width={25}
+                    height={25}
+                    color={colors.white}
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -160,13 +186,13 @@ const VideoDetailsScreen = () => {
                       <SVGIcons.Fullscreen
                         width={22}
                         height={22}
-                        color="#FFF"
+                        color={colors.white}
                       />
                     ) : (
                       <SVGIcons.Fullscreen
                         width={22}
                         height={22}
-                        color="#FFF"
+                        color={colors.white}
                       />
                     )}
                   </TouchableOpacity>
@@ -198,7 +224,11 @@ const VideoDetailsScreen = () => {
 
               <View style={styles.authorRow}>
                 <View style={styles.authorAvatar}>
-                  <SVGIcons.Person width={17} height={17} color="#FFF" />
+                  <SVGIcons.Person
+                    width={17}
+                    height={17}
+                    color={colors.white}
+                  />
                 </View>
                 <Text style={styles.authorName}>{video.channel}</Text>
               </View>
@@ -229,7 +259,7 @@ const VideoDetailsScreen = () => {
                   <View>
                     <Text style={styles.sectionTitle}>Description</Text>
                     <Text style={styles.descriptionText}>
-                      {video.description}
+                      {video.description || ""}
                     </Text>
                     <View style={styles.statsContainer}>
                       <View style={styles.statPill}>
@@ -237,7 +267,7 @@ const VideoDetailsScreen = () => {
                           style={styles.pillIconLeft}
                           width={18}
                           height={18}
-                          color="#FFF"
+                          color={colors.white}
                         />
                         <Text style={styles.pillText}>{stats.views} views</Text>
                       </View>
@@ -246,7 +276,7 @@ const VideoDetailsScreen = () => {
                           style={styles.pillIconLeft}
                           width={18}
                           height={18}
-                          color="#FFF"
+                          color={colors.white}
                         />
                         <Text style={styles.pillText}>{stats.likes} likes</Text>
                       </View>
@@ -265,11 +295,11 @@ const VideoDetailsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFF" },
+  container: { flex: 1, backgroundColor: colors.white },
 
   videoWrapper: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     overflow: "hidden",
   },
   fullscreenWrapper: {
@@ -278,7 +308,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: screenWidth,
     height: screenHeight,
-    backgroundColor: "#000",
+    backgroundColor: colors.black,
     zIndex: 100,
   },
   uiOverlay: {
@@ -334,7 +364,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  whiteTime: { color: "#FFF", fontWeight: "bold", fontSize: 13 },
+  whiteTime: { color: colors.white, fontWeight: "bold", fontSize: 13 },
   progressLineBg: {
     width: "100%",
     height: 5,
@@ -343,7 +373,7 @@ const styles = StyleSheet.create({
   },
   progressLineFill: {
     height: "100%",
-    backgroundColor: "#FF0000",
+    backgroundColor: colors.progressBar,
     borderRadius: 3,
     zIndex: 50,
   },
@@ -353,7 +383,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 7,
-    backgroundColor: "#FF0000",
+    backgroundColor: colors.progressBar,
     marginLeft: -7,
   },
 
@@ -375,7 +405,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#2D2D3A",
+    backgroundColor: colors.deepDarkBlue,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -383,19 +413,23 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontWeight: "bold",
     fontSize: 18,
-    color: "#2D2D3A",
+    color: colors.deepDarkBlue,
   },
   tabContainer: {
     flexDirection: "row",
     marginHorizontal: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#fff",
+    borderBottomColor: colors.white,
   },
   tab: { flex: 1, alignItems: "center", paddingVertical: 12 },
-  tabActive: { borderBottomWidth: 3, borderBottomColor: "#2D2D3A" },
-  tabLabel: { fontWeight: "bold", color: "#2D2D3A" },
+  tabActive: { borderBottomWidth: 3, borderBottomColor: colors.deepDarkBlue },
+  tabLabel: { fontWeight: "bold", color: colors.deepDarkBlue },
   tabContent: { padding: 15 },
-  sectionTitle: { fontWeight: "bold", marginBottom: 5, color: "#2D2D3A" },
+  sectionTitle: {
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: colors.deepDarkBlue,
+  },
   descriptionText: { color: "#666", lineHeight: 20 },
   statsContainer: {
     flexDirection: "row",
@@ -403,7 +437,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   statPill: {
-    backgroundColor: "#2D2D3A",
+    backgroundColor: colors.deepDarkBlue,
     flexDirection: "row",
     padding: 12,
     borderRadius: 8,
@@ -413,7 +447,7 @@ const styles = StyleSheet.create({
   },
   pillIconLeft: { marginRight: 8, position: "absolute", left: 12 },
   pillText: {
-    color: "#FFF",
+    color: colors.white,
     fontWeight: "bold",
     fontSize: 10,
     marginLeft: "7%",

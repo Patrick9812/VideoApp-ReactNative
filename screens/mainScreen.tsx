@@ -14,6 +14,7 @@ import { CategorySection } from "../components/CategorySection";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { fetchVideosByCategory } from "../api/fetchDataApi";
+import colors from "../theme/colors";
 
 const REQUIRED_CATEGORIES = [
   "React Native",
@@ -60,7 +61,7 @@ export default function MainScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingCenter}>
-        <ActivityIndicator size="large" color="#2B2D42" />
+        <ActivityIndicator size="large" color={colors.darkBlue} />
       </View>
     );
   }
@@ -99,6 +100,7 @@ export default function MainScreen() {
               value={searchQuery}
               onChangeText={setSearchQuery}
               showSettings
+              onSettingsPress={() => navigation.navigate("Settings")}
             />
           </View>
         }
@@ -108,7 +110,7 @@ export default function MainScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
+  safeArea: { flex: 1, backgroundColor: colors.white },
   loadingCenter: { flex: 1, justifyContent: "center", alignItems: "center" },
   headerWrapper: { paddingHorizontal: 25, marginTop: 10, marginBottom: 20 },
 });

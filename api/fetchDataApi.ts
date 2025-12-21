@@ -8,7 +8,7 @@ export const fetchVideosByCategory = async (query: string) => {
     const response = await axios.get(`${BASE_URL}/search`, {
       params: {
         part: 'snippet',
-        maxResults: 5, // Teraz pobierze 30 wyników zamiast 5
+        maxResults: 20, 
         q: query,
         type: 'video',
         key: API_KEY,
@@ -22,7 +22,7 @@ export const fetchVideosByCategory = async (query: string) => {
       description: item.snippet.description,
       date: item.snippet.publishedAt,
       thumbnail: item.snippet.thumbnails.high.url,
-      views: 0, // Domyślnie 0, dociągniemy to w detalu
+      views: 0,
       likes: 0,
     }));
   } catch (error) {
@@ -31,7 +31,6 @@ export const fetchVideosByCategory = async (query: string) => {
   }
 };
 
-// NOWA FUNKCJA: Pobieranie statystyk konkretnego filmu
 export const fetchVideoDetails = async (videoId: string) => {
   try {
     const response = await axios.get(`${BASE_URL}/videos`, {

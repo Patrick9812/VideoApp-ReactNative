@@ -7,6 +7,7 @@ import {
   FlatList,
 } from "react-native";
 import { VideoCard } from "./VideoCard";
+import colors from "../theme/colors";
 
 interface VideoItem {
   id: string;
@@ -78,12 +79,12 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontFamily: "Poppins-Bold",
     fontSize: 18,
-    color: "#2B2D42",
+    color: colors.darkBlue,
   },
   showMore: {
     fontFamily: "Poppins-Regular",
     fontSize: 12,
-    color: "#2B2D42",
+    color: colors.darkBlue,
     textDecorationLine: "underline",
   },
 });

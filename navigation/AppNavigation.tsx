@@ -6,6 +6,8 @@ import MainScreen from "../screens/mainScreen";
 import SearchScreen from "../screens/searchScreen";
 import VideoDetailsScreen from "../screens/VideoDetailsScreen";
 import { SVGIcons } from "../components/SVGIcons";
+import SettingsScreen from "../screens/SettingsScreen";
+import colors from "../theme/colors";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -14,13 +16,13 @@ function TabNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: "#fff",
-        tabBarInactiveTintColor: "#2b2d42",
+        tabBarActiveTintColor: colors.white,
+        tabBarInactiveTintColor: colors.darkBlue,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
         tabBarIcon: ({ focused }) => {
-          const iconColor = focused ? "#FFFFFF" : "#2b2d42";
+          const iconColor = focused ? colors.white : colors.darkBlue;
           if (route.name === "Home") {
             return <SVGIcons.Home width={24} height={24} color={iconColor} />;
           } else {
@@ -40,6 +42,7 @@ export default function AppNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={TabNavigator} />
       <Stack.Screen name="VideoDetails" component={VideoDetailsScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 }

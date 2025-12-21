@@ -21,6 +21,7 @@ import { SearchInput } from "../components/SearchBar";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import formatDate from "../components/FormatDate";
 import { fetchVideosByCategory } from "../api/fetchDataApi";
+import colors from "../theme/colors";
 
 type SortOption = "Latest" | "Oldest" | "Popular";
 
@@ -117,7 +118,7 @@ export default function SearchScreen() {
           <View style={styles.infoRow}>
             <View style={{ flex: 1 }}>
               {loading ? (
-                <ActivityIndicator size="small" color="#2B2D42" />
+                <ActivityIndicator size="small" color={colors.darkBlue} />
               ) : (
                 <Text style={styles.resultsCount}>
                   {allVideos.length} results found for:{" "}
@@ -199,9 +200,8 @@ export default function SearchScreen() {
   );
 }
 
-// Style pozostają bez zmian
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
+  safeArea: { flex: 1, backgroundColor: colors.white },
   container: { flex: 1, paddingHorizontal: 25 },
   infoRow: {
     flexDirection: "row",
@@ -211,12 +211,12 @@ const styles = StyleSheet.create({
   },
   resultsCount: {
     fontSize: 10,
-    color: "#2B2D42",
+    color: colors.darkBlue,
     opacity: 0.7,
   },
   sortButtonText: {
     fontSize: 11,
-    color: "#2B2D42",
+    color: colors.darkBlue,
   },
   boldText: { fontWeight: "bold" },
   videoCard: { marginBottom: 25 },
@@ -227,15 +227,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#E1E4E8",
   },
   cardInfo: { marginTop: 8 },
-  channelText: { fontWeight: "bold", fontSize: 13, color: "#2B2D42" },
+  channelText: { fontWeight: "bold", fontSize: 13, color: colors.darkBlue },
   titleText: {
     fontSize: 13,
-    color: "#2B2D42",
+    color: colors.darkBlue,
     lineHeight: 18,
   },
   dateText: {
     fontSize: 10,
-    color: "#2B2D42",
+    color: colors.darkBlue,
     textAlign: "right",
     opacity: 0.5,
   },
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontWeight: "bold",
     fontSize: 18,
-    color: "#FFF",
+    color: colors.white,
     marginBottom: 20,
   },
   radioOption: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: "#FFF",
+    borderColor: colors.white,
     marginRight: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -273,15 +273,15 @@ const styles = StyleSheet.create({
     height: 10,
     width: 10,
     borderRadius: 5,
-    backgroundColor: "#2B2D42",
+    backgroundColor: colors.darkBlue,
   },
-  radioText: { color: "#FFF" },
+  radioText: { color: colors.white },
   confirmButton: {
-    backgroundColor: "#2B2D42",
+    backgroundColor: colors.darkBlue,
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
     marginTop: 100,
   },
-  confirmButtonText: { color: "#FFF", fontWeight: "bold" },
+  confirmButtonText: { color: colors.white, fontWeight: "bold" },
 });

@@ -12,7 +12,7 @@ import { StatusBar } from "expo-status-bar";
 
 import LoginScreen from "./screens/loginScreen";
 import AppNavigator from "./navigation/AppNavigation";
-console.log("Mój klucz API:", process.env.EXPO_PUBLIC_YOUTUBE_API_KEY);
+import colors from "./theme/colors";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -60,7 +60,7 @@ export default function App() {
     <NavigationContainer>
       <StatusBar
         style="dark"
-        backgroundColor="#ffffff"
+        backgroundColor={colors.white}
         translucent={false}
         hidden={false}
       />
